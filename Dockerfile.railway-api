@@ -14,8 +14,18 @@ RUN apt-get update \
     && corepack prepare pnpm@9.12.0 --activate
 
 # Railway build is the deployment environment; install IBM Bob Shell here.
-# If IBM changes the installer URL, this layer is the only API image step to update.
-RUN curl -fsSL https://bob.ibm.com/download/bobshell.sh | bash
+# Normalize the installed binary to /usr/local/bin/bob so runtime preflight can find it.
+RUN curl -fsSL https://bob.ibm.com/download/bobshell.sh | bash \
+    && if ! command -v bob >/dev/null 2>&1; then \
+         BOB_PATH="$(find /root /usr/local /opt -type f -name bob 2>/dev/null | head -n 1)"; \
+         if [ -z "$BOB_PATH" ]; then \
+           echo "IBM Bob Shell installer completed but no bob binary was found" >&2; \
+           find /root /usr/local /opt -maxdepth 5 -type f 2>/dev/null | grep -Ei '/bob$|bobshell|bob-shell' || true; \
+           exit 1; \
+         fi; \
+         ln -sf "$BOB_PATH" /usr/local/bin/bob; \
+       fi \
+    && command -v bob
 
 WORKDIR /workspace
 COPY . .
