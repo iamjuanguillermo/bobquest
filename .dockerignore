@@ -1,0 +1,15 @@
+.git
+.venv
+node_modules
+**/node_modules
+.quasar
+**/.quasar
+dist
+**/dist
+coverage
+.cache
+.DS_Store
+*.log
+__pycache__
+**/__pycache__
+*.pyc

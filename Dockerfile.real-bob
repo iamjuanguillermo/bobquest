@@ -1,0 +1,23 @@
+ARG BOBQUEST_BOB_BASE_IMAGE=bobquest-bob-shell-base:local
+
+FROM ${BOBQUEST_BOB_BASE_IMAGE} AS build
+
+WORKDIR /workspace
+COPY . .
+RUN pnpm install --frozen-lockfile=false
+RUN pnpm --filter bobquest-web build
+
+FROM ${BOBQUEST_BOB_BASE_IMAGE} AS runtime
+
+ENV NODE_ENV=production \
+    PORT=8787 \
+    HOST=0.0.0.0 \
+    BOBQUEST_PROJECT_ROOT=/workspace \
+    PNPM_HOME=/pnpm \
+    PATH=/pnpm:/usr/local/bin:/root/.local/bin:/root/.bob/bin:/root/.config/bob/bin:$PATH
+
+WORKDIR /workspace
+COPY --from=build /workspace /workspace
+
+EXPOSE 8787
+CMD ["pnpm", "--filter", "bobquest-runtime-api", "start"]

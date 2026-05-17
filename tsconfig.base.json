@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@bobquest/onboarding-contracts": ["packages/onboarding-contracts/src/index.ts"],
+      "@bobquest/bob-shell-runtime": ["packages/bob-shell-runtime/src/index.ts"],
+      "@bobquest/repo-workspace": ["packages/repo-workspace/src/index.ts"],
+      "@bobquest/runtime-state": ["packages/runtime-state/src/index.ts"]
+    }
+  }
+}

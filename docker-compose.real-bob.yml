@@ -1,0 +1,19 @@
+services:
+  bobquest-runtime-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.real-bob
+      target: runtime
+      args:
+        BOBQUEST_BOB_BASE_IMAGE: ${BOBQUEST_BOB_BASE_IMAGE:-bobquest-bob-shell-base:local}
+    working_dir: /workspace
+    command: pnpm --filter bobquest-runtime-api start
+    ports:
+      - "8787:8787"
+    volumes:
+      - bobquest_runtime_data:/workspace/data/runtime
+    env_file:
+      - .env.real-bob
+
+volumes:
+  bobquest_runtime_data:

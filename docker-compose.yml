@@ -1,0 +1,45 @@
+services:
+  bobquest-runtime-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    working_dir: /workspace
+    command: pnpm --filter bobquest-runtime-api start
+    ports:
+      - "8787:8787"
+    volumes:
+      - bobquest_runtime_data:/workspace/data/runtime
+    environment:
+      NODE_ENV: production
+      PORT: "8787"
+      HOST: "0.0.0.0"
+      BOBQUEST_PROJECT_ROOT: "/workspace"
+      BOBQUEST_PUBLIC_DEMO_MODE: "true"
+      BOBQUEST_ALLOWED_REPOS: "owner/repo1,owner/repo2"
+      BOBQUEST_MAX_CONCURRENT_RUNS: "1"
+      BOBQUEST_MAX_RUNS_TOTAL: "10"
+      BOBQUEST_MAX_RUNS_PER_HOUR: "2"
+      BOBQUEST_MAX_EVALUATIONS_PER_RUN: "5"
+      BOBQUEST_MAX_LOCALIZATIONS_PER_RUN: "2"
+      BOBQUEST_RUNTIME_DISABLED: "false"
+      BOBQUEST_RUNTIME_DATA_DIR: "data/runtime/runs"
+      BOBQUEST_WORKSPACE_DIR: "data/runtime/workspaces"
+      BOBSHELL_COMMAND: ""
+      BOBQUEST_OPTIONAL_LLM_ENABLED: "false"
+      BOBQUEST_OPTIONAL_LLM_PROVIDER: "watsonx"
+      BOBQUEST_OPTIONAL_LLM_JSON_RECOVERY: "false"
+      BOBQUEST_OPTIONAL_LLM_LOCALIZATION: "false"
+      WATSONX_URL: "https://us-south.ml.cloud.ibm.com"
+      WATSONX_MODEL_ID: "ibm/granite-3-2b-instruct"
+
+  bobquest-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build
+    working_dir: /workspace
+    command: python3 -u tests/run_all.py
+
+volumes:
+  bobquest_runtime_data:

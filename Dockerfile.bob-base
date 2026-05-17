@@ -1,0 +1,22 @@
+FROM node:22-bookworm-slim
+
+ENV PNPM_HOME=/pnpm \
+    PATH=/pnpm:/usr/local/bin:/root/.local/bin:/root/.bob/bin:/root/.config/bob/bin:$PATH \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bash ca-certificates curl git python3 findutils \
+    && rm -rf /var/lib/apt/lists/* \
+    && corepack enable \
+    && corepack prepare pnpm@9.12.0 --activate
+
+# IBM Bob Shell is installed in this reusable local base image, not in every
+# project image. Build this image once with scripts/build-real-bob-base-image.sh.
+RUN curl -fsSL https://bob.ibm.com/download/bobshell.sh | bash \
+    && if ! command -v bob >/dev/null 2>&1; then \
+         BOB_PATH="$(find /root /usr/local -type f -name bob 2>/dev/null | head -n 1)"; \
+         test -n "$BOB_PATH"; \
+         ln -sf "$BOB_PATH" /usr/local/bin/bob; \
+       fi \
+    && command -v bob >/dev/null 2>&1

@@ -1,0 +1,17 @@
+{
+  "name": "BobQuest Runtime Pivot Dev",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "bobquest-web",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [9000],
+  "postCreateCommand": "pnpm install --frozen-lockfile=false",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Vue.volar",
+        "ms-python.python",
+        "EditorConfig.EditorConfig"
+      ]
+    }
+  }
+}

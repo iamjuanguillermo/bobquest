@@ -1,0 +1,26 @@
+{
+  "name": "bobquest-web",
+  "version": "0.23.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/ensure-local-quasar.mjs && node node_modules/@quasar/app-vite/bin/quasar.js dev",
+    "build": "node scripts/ensure-local-quasar.mjs && node node_modules/@quasar/app-vite/bin/quasar.js build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test:static": "python3 ../../tests/ui/test_crew_dragon_shell.py"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.16.12",
+    "quasar": "^2.16.0",
+    "vue": "^3.4.0",
+    "vue-router": "^4.3.0",
+    "@bobquest/onboarding-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@quasar/app-vite": "2.0.0",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0",
+    "vue-tsc": "^2.0.0"
+  }
+}

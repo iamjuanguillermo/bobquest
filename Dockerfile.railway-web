@@ -1,0 +1,19 @@
+FROM node:22-bookworm-slim
+
+ENV NODE_ENV=production \
+    PNPM_HOME=/pnpm \
+    PATH=/pnpm:$PATH
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bash ca-certificates python3 \
+    && rm -rf /var/lib/apt/lists/* \
+    && corepack enable \
+    && corepack prepare pnpm@9.12.0 --activate
+
+WORKDIR /workspace
+COPY . .
+RUN pnpm install --frozen-lockfile=false
+RUN pnpm --filter bobquest-web build
+
+EXPOSE 9000
+CMD ["bash", "-lc", "cat > apps/web/dist/spa/bobquest-runtime-config.js <<EOF2\nwindow.__BOBQUEST_CONFIG__ = {\n  runtimeApiUrl: '${BOBQUEST_RUNTIME_API_URL:-${VITE_BOBQUEST_RUNTIME_API_URL:-}}',\n  publicDemoMode: '${VITE_BOBQUEST_PUBLIC_DEMO_MODE:-true}',\n  allowedRepos: '${VITE_BOBQUEST_ALLOWED_REPOS:-}'\n};\nEOF2\npnpm --filter bobquest-web preview -- --host 0.0.0.0 --port ${PORT:-9000}"]

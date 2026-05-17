@@ -1,0 +1,14 @@
+{
+  "objective_id": "explain-runtime-path",
+  "interaction_id": "explain-runtime-path:open_text_evaluated_by_bob",
+  "status": "passed",
+  "correct": true,
+  "confidence": "high",
+  "feedback": "The answer correctly describes the clone, Bob Shell execution, JSON validation, and run_state persistence path.",
+  "evidence": [
+    {
+      "path": "README.md",
+      "reason": "The explanation references the repository entry point."
+    }
+  ]
+}

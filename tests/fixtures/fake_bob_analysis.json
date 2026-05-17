@@ -1,0 +1,121 @@
+{
+  "schema_version": "0.23",
+  "repo": {
+    "name": "bobquest-demo",
+    "url": "https://github.com/acme/bobquest-demo",
+    "summary": "Small repository used to validate the BobQuest backend runtime path without spending IBM Bob Shell credits."
+  },
+  "flows": [
+    {
+      "id": "repo-health-check",
+      "title": "Repository health check flow",
+      "type": "command_flow",
+      "summary": "A developer inspects the repository, runs the validation command, and confirms that the expected source files are present.",
+      "why_it_matters": "This is the safest first path because it teaches the repository entry point without requiring code changes.",
+      "risk": "low",
+      "complexity": "low",
+      "onboarding_suitability": "starter",
+      "steps": [
+        {
+          "id": "inspect-readme",
+          "title": "Inspect repository entry point",
+          "summary": "Start by reading the README and the package manifest to understand how the project is launched.",
+          "risk": "low",
+          "files": [
+            {
+              "path": "README.md",
+              "reason": "The README explains the project purpose and first command."
+            },
+            {
+              "path": "package.json",
+              "reason": "The manifest lists the validation scripts a new developer should run."
+            }
+          ],
+          "tests": [
+            {
+              "command": "pnpm test",
+              "reason": "The accumulated test command confirms the repository still satisfies the onboarding contract."
+            }
+          ],
+          "bob_explanation": "IBM Bob identifies this flow as a starter-safe path because it is read-oriented and validates understanding before any mutation.",
+          "evidence": [
+            {
+              "path": "README.md",
+              "reason": "The entry-point documentation anchors the first onboarding step."
+            }
+          ]
+        }
+      ],
+      "starter_missions": [
+        {
+          "id": "confirm-health-check-command",
+          "title": "Confirm the validation command",
+          "flow_step_id": "inspect-readme",
+          "risk": "low",
+          "why_enabled": "The mission only asks the developer to identify the safe validation command before touching the codebase.",
+          "files_to_understand": [
+            {
+              "path": "package.json",
+              "reason": "The command is declared in the scripts section."
+            }
+          ],
+          "validation_commands": [
+            {
+              "command": "pnpm test",
+              "reason": "This command should remain the accumulated local validation entry point."
+            }
+          ],
+          "interaction": {
+            "type": "single_choice",
+            "prompt": "Which command should a new developer run before changing this repository?",
+            "options": [
+              {
+                "id": "a",
+                "label": "pnpm test"
+              },
+              {
+                "id": "b",
+                "label": "git push --force"
+              }
+            ],
+            "correct_option_id": "a",
+            "success_message": "Correct. Start with the accumulated validation command.",
+            "failure_message": "Not yet. Choose the safe validation command rather than a destructive operation."
+          }
+        },
+        {
+          "id": "explain-runtime-path",
+          "title": "Explain the runtime path",
+          "flow_step_id": "inspect-readme",
+          "risk": "low",
+          "why_enabled": "The developer can describe the runtime path without modifying files.",
+          "files_to_understand": [
+            {
+              "path": "README.md",
+              "reason": "The README provides the runtime entry point."
+            }
+          ],
+          "validation_commands": [
+            {
+              "command": "pnpm test",
+              "reason": "The command verifies the explanation against the repository contract."
+            }
+          ],
+          "interaction": {
+            "type": "open_text_evaluated_by_bob",
+            "prompt": "Explain how the repository health check flow proves the backend runtime is wired correctly.",
+            "evaluation_guidance": "Accept answers that mention repository cloning, Bob Shell execution, JSON validation, and run_state persistence."
+          }
+        }
+      ],
+      "locked_or_later_issues": [
+        {
+          "title": "Change deployment topology",
+          "risk": "high",
+          "reason": "Deployment topology changes are not suitable as a first issue because they can break runtime availability."
+        }
+      ]
+    }
+  ],
+  "recommended_first_flow_id": "repo-health-check"
+}
