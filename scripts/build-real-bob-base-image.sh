@@ -11,7 +11,7 @@ if docker image inspect "$IMAGE_NAME" >/dev/null 2>&1 && [ "$FORCE" != "true" ];
 fi
 
 echo "Building BobQuest Bob Shell base image: $IMAGE_NAME"
-echo "This may take several minutes the first time because it installs IBM Bob Shell."
+echo "This installs IBM Bob Shell from the local bob-download tarball; no bob.ibm.com download is performed."
 docker build -f Dockerfile.bob-base -t "$IMAGE_NAME" .
 
 echo "Built: $IMAGE_NAME"

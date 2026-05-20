@@ -2,7 +2,7 @@
 
 B14 fixes the Docker runtime workflow for iterative development.
 
-The repository can be deleted and re-unzipped between slices, while the local Docker daemon keeps a reusable image:
+The repository can be deleted and re-pulled between slices, while the local Docker daemon keeps a reusable image:
 
 ```text
 bobquest-bob-shell-base:local
@@ -12,8 +12,8 @@ That base image contains:
 
 - Node 22 runtime;
 - pnpm/corepack;
-- git/python/curl/bash;
-- IBM Bob Shell binary.
+- git/python/bash;
+- IBM Bob Shell binary installed from `bob-download/bobshell-1.0.4.tgz` after `SHA256SUMS.txt` verification.
 
 `Dockerfile.real-bob` no longer downloads Bob Shell on every project image build. It uses the reusable base image for both build and runtime stages.
 
@@ -25,11 +25,11 @@ Run once:
 ./scripts/build-real-bob-base-image.sh
 ```
 
-This can take several minutes because it downloads and installs IBM Bob Shell.
+This installs Bob Shell from the local `bob-download` tarball. It does not call `bob.ibm.com` during the Docker build.
 
 ## Future repos / future slices
 
-After unzipping a new BobQuest repo, do not rebuild the base image unless you want to update Bob Shell.
+After pulling a new BobQuest repo, do not rebuild the base image unless you want to update Bob Shell or verify a changed local tarball.
 
 Run:
 
@@ -43,11 +43,11 @@ or directly:
 docker compose -f docker-compose.real-bob.yml up --build
 ```
 
-As long as `bobquest-bob-shell-base:local` exists in Docker, the project image reuses it and does not download Bob Shell again.
+As long as `bobquest-bob-shell-base:local` exists in Docker, the project image reuses it and does not install Bob Shell again.
 
 ## Force rebuild Bob Shell base
 
-Only when intentionally updating Bob Shell:
+Only when intentionally updating Bob Shell or validating the pinned local installer:
 
 ```bash
 BOBQUEST_FORCE_REBUILD_BOB_BASE=true ./scripts/build-real-bob-base-image.sh

@@ -1,6 +1,6 @@
 {
   "name": "bobquest-runtime-pivot",
-  "version": "0.23.14-backend-b14",
+  "version": "0.23.15-local-bobshell-installer",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.12.0",
@@ -15,7 +15,7 @@
     "runtime:dev": "pnpm --filter bobquest-runtime-api dev",
     "runtime:start": "pnpm --filter bobquest-runtime-api start",
     "dev": "pnpm --parallel --filter bobquest-runtime-api --filter bobquest-web dev",
-    "test:deploy": "python3 -u tests/deploy/test_docker_vps_hardening.py && python3 -u tests/deploy/test_real_bob_docker_runtime.py",
+    "test:deploy": "python3 -u tests/deploy/test_docker_vps_hardening.py && python3 -u tests/deploy/test_real_bob_docker_runtime.py && python3 -u tests/deploy/test_railway_two_service_deploy.py",
     "test:backend-e2e": "python3 -u tests/runtime/test_b1_fake_bob_shell_e2e.py",
     "test:backend-cancel": "python3 -u tests/runtime/test_b2_process_registry_contract.py && python3 -u tests/runtime/test_b2_process_registry_cancellation.py",
     "test:backend-workspace": "python3 -u tests/runtime/test_b3_workspace_lifecycle_contract.py && python3 -u tests/runtime/test_b3_workspace_lifecycle_e2e.py",

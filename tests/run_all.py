@@ -48,6 +48,7 @@ TESTS = [
     ROOT / "tests" / "ui" / "test_slice5_localization_surface.py",
     ROOT / "tests" / "deploy" / "test_docker_vps_hardening.py",
     ROOT / "tests" / "deploy" / "test_real_bob_docker_runtime.py",
+    ROOT / "tests" / "deploy" / "test_railway_two_service_deploy.py",
 ]
 
 
@@ -55,7 +56,7 @@ def main() -> int:
     for test in TESTS:
         print(f"=== {test.relative_to(ROOT)} ===")
         runpy.run_path(str(test), run_name="__main__")
-    print("All BobQuest v0.23.13 Backend B13 tests passed.")
+    print("All BobQuest local Bob Shell installer tests passed.")
     return 0
 
 

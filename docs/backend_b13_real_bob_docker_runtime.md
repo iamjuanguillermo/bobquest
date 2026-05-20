@@ -4,7 +4,10 @@ The real Bob Shell runtime is Docker-first.
 
 The repository includes:
 
-- `Dockerfile.bob-base` — reusable local image that installs IBM Bob Shell once.
+- `bob-download/bobshell-1.0.4.tgz` — pinned Bob Shell installer tarball committed with the repo.
+- `bob-download/SHA256SUMS.txt` — checksum used before installation.
+- `scripts/install-bob-shell-from-local-tgz.sh` — local installer used by Docker builds.
+- `Dockerfile.bob-base` — reusable local image that installs IBM Bob Shell from `bob-download` once.
 - `Dockerfile.real-bob` — project runtime image that reuses the base image.
 - `docker-compose.real-bob.yml` — runtime compose file.
 - `.env.real-bob` — editable runtime env file.
@@ -14,8 +17,6 @@ The repository includes:
 ## First time on this machine
 
 ```bash
-unzip BobQuest_v0.23.14_BackendB14_ReusableRealBobDockerBase.zip
-cd bobquest_slice5_work
 corepack enable
 pnpm install
 pnpm test
@@ -43,10 +44,9 @@ BOBQUEST_REAL_BOB_SMOKE_REPO_ID=...
 
 If `bobquest-bob-shell-base:local` already exists in Docker, do **not** rebuild it.
 
-After unzipping a future repo:
+After pulling a future repo:
 
 ```bash
-cd bobquest_slice5_work
 corepack enable
 pnpm install
 nano .env.real-bob
@@ -79,7 +79,9 @@ pnpm smoke:real-bob:run-once
 ## Safety
 
 - Bob Shell is installed inside Docker, not required on the host laptop.
-- Bob Shell is installed in a reusable base image, not in every repo build.
+- Bob Shell is installed from the local `bob-download` tarball after checksum verification.
+- Docker builds do not call `https://bob.ibm.com/download/bobshell.sh`.
+- Bob Shell is installed in a reusable base image, not in every local repo build.
 - Container startup does not install dependencies or Bob Shell.
 - `POST /api/runs` still fails closed unless Bob Shell preflight is ready.
 - Public demo mode uses allowlist and strict limits.

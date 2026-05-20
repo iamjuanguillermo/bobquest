@@ -1,23 +1,48 @@
-FROM ghcr.io/iamjuanguillermo/bobquest-bob-shell-base:latest AS build
+FROM node:22-bookworm-slim AS build
+
+ENV PNPM_HOME=/pnpm \
+    PATH=/pnpm:/usr/local/bin:/root/.local/bin:/root/.bob/bin:/root/.config/bob/bin:$PATH \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bash ca-certificates git python3 findutils \
+    && rm -rf /var/lib/apt/lists/* \
+    && corepack enable \
+    && corepack prepare pnpm@9.12.0 --activate
 
 WORKDIR /workspace
 COPY . .
-
+RUN ./scripts/install-bob-shell-from-local-tgz.sh ./bob-download
 RUN pnpm install --frozen-lockfile=false
 RUN pnpm --filter bobquest-runtime-api build
 
-FROM ghcr.io/iamjuanguillermo/bobquest-bob-shell-base:latest AS runtime
+FROM node:22-bookworm-slim AS runtime
 
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     BOBQUEST_PROJECT_ROOT=/workspace \
+    BOBSHELL_COMMAND=bob \
+    BOBSHELL_STATUS_ARGS=--version \
+    BOBSHELL_ANALYZE_ARGS=--auth-method,api-key \
+    BOBSHELL_EVALUATE_ARGS=--auth-method,api-key \
+    BOBSHELL_PROMPT_MODE=argument \
+    BOBSHELL_PROMPT_ARG=-p \
     PNPM_HOME=/pnpm \
-    PATH=/pnpm:/usr/local/bin:/root/.local/bin:/root/.bob/bin:$PATH
+    PATH=/pnpm:/usr/local/bin:/root/.local/bin:/root/.bob/bin:/root/.config/bob/bin:$PATH
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends bash ca-certificates git python3 findutils \
+    && rm -rf /var/lib/apt/lists/* \
+    && corepack enable \
+    && corepack prepare pnpm@9.12.0 --activate
 
 WORKDIR /workspace
 
+COPY --from=build /opt/bobshell /opt/bobshell
+COPY --from=build /usr/local/bin/bob /usr/local/bin/bob
 COPY --from=build /workspace /workspace
 
-EXPOSE 8080
+EXPOSE 8787
 
 CMD ["pnpm", "--filter", "bobquest-runtime-api", "start"]

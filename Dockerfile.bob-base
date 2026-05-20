@@ -6,17 +6,15 @@ ENV PNPM_HOME=/pnpm \
     PYTHONUNBUFFERED=1
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends bash ca-certificates curl git python3 findutils \
+    && apt-get install -y --no-install-recommends bash ca-certificates git python3 findutils \
     && rm -rf /var/lib/apt/lists/* \
     && corepack enable \
     && corepack prepare pnpm@9.12.0 --activate
 
-# IBM Bob Shell is installed in this reusable local base image, not in every
-# project image. Build this image once with scripts/build-real-bob-base-image.sh.
-RUN curl -fsSL https://bob.ibm.com/download/bobshell.sh | bash \
-    && if ! command -v bob >/dev/null 2>&1; then \
-         BOB_PATH="$(find /root /usr/local -type f -name bob 2>/dev/null | head -n 1)"; \
-         test -n "$BOB_PATH"; \
-         ln -sf "$BOB_PATH" /usr/local/bin/bob; \
-       fi \
+# IBM Bob Shell is installed from the repository-pinned tarball, not fetched
+# from bob.ibm.com during Docker builds. Keep bob-download/SHA256SUMS.txt in sync.
+WORKDIR /workspace
+COPY bob-download ./bob-download
+COPY scripts/install-bob-shell-from-local-tgz.sh ./scripts/install-bob-shell-from-local-tgz.sh
+RUN ./scripts/install-bob-shell-from-local-tgz.sh ./bob-download \
     && command -v bob >/dev/null 2>&1
