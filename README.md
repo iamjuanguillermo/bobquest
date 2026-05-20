@@ -2,6 +2,13 @@
 
 BobQuest is a flow-guided developer onboarding product powered by IBM Bob Shell runtime.
 
+> [!IMPORTANT]
+> **IBM Bob subscription required.** This repository depends on the real IBM Bob Shell runtime.
+> To run repository analysis, the operator must have an active IBM Bob subscription/account and a valid Bob Shell API key.
+> Without an active subscription and API key, local Docker, Railway deployment and `POST /api/runs` can boot successfully but Bob analysis will fail.
+> BobQuest does not include a fallback analyzer, mock Bob runtime, or substitute static onboarding path.
+
+
 The v0.23 runtime rule is strict:
 
 - IBM Bob Shell is the runtime brain.
